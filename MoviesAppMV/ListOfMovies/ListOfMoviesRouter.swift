@@ -8,15 +8,34 @@
 import Foundation
 import UIKit
 
-class ListOfMoviesRouter {
+protocol ListOfMoviesRouting: AnyObject {
+    var detailRouter: DetailRouting? { get }
+    var listOfMoviesView: ListOfMoviesView? { get }
+    
+    func showListOfMovies(window: UIWindow?)
+    func showDetailMoview(withMovieId movieId: String)
+}
+
+class ListOfMoviesRouter: ListOfMoviesRouting {
+    var detailRouter: DetailRouting?
+    var listOfMoviesView: ListOfMoviesView?
+    
     func showListOfMovies(window: UIWindow?) {
-        let view = ListOfMoviesView()
         let interactor = ListOfMoviesInteractor()
-        let presenter = ListOfMoviesPresenter(lisOfMoviesInteractor: interactor)
-        presenter.ui = view
-        view.presenter = presenter
+        let presenter = ListOfMoviesPresenter(lisOfMoviesInteractor: interactor, router: self)
         
-        window?.rootViewController = view
+        listOfMoviesView = ListOfMoviesView(presenter: presenter)
+        presenter.ui = listOfMoviesView
+//        view.presenter = presenter
+        
+        window?.rootViewController = listOfMoviesView
         window?.makeKeyAndVisible()
+    }
+    
+    func showDetailMoview(withMovieId movieId: String) {
+        guard let fromViewController = listOfMoviesView else {
+            return
+        }
+        detailRouter?.showDetail(fromViewController: fromViewController, withMovieId: movieId)
     }
 }

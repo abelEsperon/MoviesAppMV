@@ -7,23 +7,45 @@
 
 import Foundation
 
-protocol ListOfMoviesUI: AnyObject {
-    func update(movies: [PopularMovieEntity])
+protocol ListOfMoviesPresentable: AnyObject {
+    var ui: ListOfMoviesUI? { get }
+    var viewModels: [ViewModel] { get }
+    
+    func onViewApear()
+    func onTapCell(atIndex: Int)
 }
 
-class ListOfMoviesPresenter {
+protocol ListOfMoviesUI: AnyObject {
+    func update(movies: [ViewModel])
+}
+
+class ListOfMoviesPresenter: ListOfMoviesPresentable {
+    weak var ui: ListOfMoviesUI?
     
-    var ui: ListOfMoviesUI?
-    private let lisOfMoviesInteractor: ListOfMoviesInteractor
+    private let lisOfMoviesInteractor: ListOfMoviesInteractable
+    var viewModels: [ViewModel] = []
+    private var models: [PopularMovieEntity] = []
     
-    init(lisOfMoviesInteractor: ListOfMoviesInteractor) {
+    private let mapper: Mapper
+    private let router: ListOfMoviesRouting
+    
+    init(lisOfMoviesInteractor: ListOfMoviesInteractable, mapper: Mapper = Mapper(), router: ListOfMoviesRouting) {
         self.lisOfMoviesInteractor = lisOfMoviesInteractor
+        self.mapper = mapper
+        self.router = router
     }
     
     func onViewApear() {
         Task {
-            let models = await lisOfMoviesInteractor.getListOfMovies()
-            ui?.update(movies: models.results)
+            models = await lisOfMoviesInteractor.getListOfMovies().results
+            viewModels = models.map(mapper.map(entity:))
+            ui?.update(movies: viewModels)
         }
     }
+    
+    func onTapCell(atIndex: Int) {
+        let movieId = models[atIndex].id
+        print(movieId)
+    }
+    
 }

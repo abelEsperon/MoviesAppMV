@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 class MovieCellView: UITableViewCell {
     let movieImageView: UIImageView = {
@@ -35,6 +36,7 @@ class MovieCellView: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
     }
     
     required init?(coder: NSCoder) {
@@ -51,7 +53,8 @@ class MovieCellView: UITableViewCell {
             movieImageView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
             movieImageView.heightAnchor.constraint(equalToConstant: 200),
             movieImageView.widthAnchor.constraint(equalToConstant: 100),
-            movieImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//            movieImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            movieImageView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -12),
             
             movieName.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 18),
             movieName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
@@ -59,13 +62,16 @@ class MovieCellView: UITableViewCell {
             
             movieDescription.leadingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: 20),
             movieDescription.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            movieDescription.topAnchor.constraint(equalTo: movieName.bottomAnchor, constant: 8)
+            movieDescription.topAnchor.constraint(equalTo: movieName.bottomAnchor, constant: 8),
+            movieDescription.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -12)
+
         ])
     }
     
-    func configure(model: PopularMovieEntity) {
+    func configure(model: ViewModel) {
+        
+        movieImageView.kf.setImage(with: model.imageURL)
         movieName.text = model.title
         movieDescription.text = model.overview
-        
     }
 }
