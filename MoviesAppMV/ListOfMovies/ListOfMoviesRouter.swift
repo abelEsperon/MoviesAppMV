@@ -21,6 +21,7 @@ class ListOfMoviesRouter: ListOfMoviesRouting {
     var listOfMoviesView: ListOfMoviesView?
     
     func showListOfMovies(window: UIWindow?) {
+        self.detailRouter = DetailRouter()
         let interactor = ListOfMoviesInteractor()
         let presenter = ListOfMoviesPresenter(lisOfMoviesInteractor: interactor, router: self)
         

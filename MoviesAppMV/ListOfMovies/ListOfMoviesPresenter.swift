@@ -25,7 +25,6 @@ class ListOfMoviesPresenter: ListOfMoviesPresentable {
     private let lisOfMoviesInteractor: ListOfMoviesInteractable
     var viewModels: [ViewModel] = []
     private var models: [PopularMovieEntity] = []
-    
     private let mapper: Mapper
     private let router: ListOfMoviesRouting
     
@@ -46,6 +45,7 @@ class ListOfMoviesPresenter: ListOfMoviesPresentable {
     func onTapCell(atIndex: Int) {
         let movieId = models[atIndex].id
         print(movieId)
+        router.showDetailMoview(withMovieId: movieId.description)
     }
     
 }
